@@ -1,0 +1,1950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Family Meal Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif}.app-header h1,.plan-topbar h2,.rules-section h3,.prep-panel h4{font-family:'Lora',Georgia,serif}</style>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FAFAF7; --surface:#FFFFFF; --surface2:#F5F4EF; --surface3:#EFEDE6;
+  --border:#E8E6DE; --border2:#D4D1C4;
+  --text:#1C1B18; --text2:#6B6860; --text3:#A09D96;
+  --green:#2D6A4F; --green-bg:#EAF4EF; --green-mid:#52B788; --green-dark:#1B4332;
+  --amber:#92400E; --amber-bg:#FEF3C7; --amber-mid:#D97706;
+  --red:#7F1D1D; --red-bg:#FEE2E2;
+  --blue:#1E3A5F; --blue-bg:#EFF6FF; --blue-mid:#3B82F6;
+  --pink-bg:#FDF2F8; --pink:#86198F;
+  --purple-bg:#F5F3FF; --purple:#5B21B6; --purple-mid:#8B5CF6;
+  --radius:12px; --radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-wrap{max-width:700px;margin:0 auto;padding:2rem 1.25rem 4rem}
+
+/* ── header ── */
+.app-header{text-align:center;margin-bottom:2.25rem;padding-bottom:1.75rem;border-bottom:1px solid var(--border)}
+.app-header h1{font-family:'Lora',serif;font-size:28px;font-weight:600;letter-spacing:-.3px;margin-bottom:5px}
+.app-header .tagline{font-size:13px;color:var(--text2)}
+.header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:.2rem}
+
+/* ── cards ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:1rem}
+.card-header{background:var(--surface2);padding:9px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);display:flex;align-items:center;justify-content:space-between}
+.settings-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
+.settings-section{margin-bottom:1.25rem}
+.settings-section:last-child{margin-bottom:0}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+
+/* ── toggles / chips ── */
+.toggle-group,.chip-group{display:flex;flex-wrap:wrap;gap:7px}
+.cuisine-tog{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;font-size:12.5px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.cuisine-tog .dot{width:7px;height:7px;border-radius:50%;background:transparent;transition:background .18s;flex-shrink:0}
+.cuisine-tog .st{font-size:10px;opacity:.65;margin-left:1px}
+.cuisine-tog[data-state="yes"]{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.cuisine-tog[data-state="yes"] .dot{background:var(--green-mid)}
+.cuisine-tog[data-state="occ"]{background:var(--amber-bg);border-color:var(--amber-mid);color:var(--amber)}
+.cuisine-tog[data-state="occ"] .dot{background:var(--amber-mid)}
+.chip{padding:5px 13px;border-radius:20px;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.chip.active{background:var(--blue-bg);border-color:var(--blue-mid);color:var(--blue)}
+.chip.prep-day{padding:5px 13px;border-radius:20px;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s ease}
+.chip.prep-day.active{background:var(--purple-bg);border-color:var(--purple-mid);color:var(--purple)}
+
+/* ── inputs ── */
+input[type="text"],input[type="email"],input[type="number"],input[type="password"]{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);font-family:'Inter',sans-serif;font-size:16px;color:var(--text);outline:none;transition:border-color .15s}
+input[type="text"]:focus,input[type="email"]:focus,input[type="number"]:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+input[type="number"]{width:64px;text-align:center;font-size:16px}
+
+/* ── household row ── */
+.household-row{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.hh-field{display:flex;align-items:center;gap:8px}
+.hh-field label{font-size:13px;color:var(--text2);white-space:nowrap}
+.hh-stepper{display:flex;align-items:center;gap:6px}
+.hh-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .12s;line-height:1;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.hh-btn:hover{background:var(--surface2);border-color:var(--text3)}
+.hh-val{font-size:15px;font-weight:600;color:var(--text);min-width:22px;text-align:center}
+
+/* ── comfort suggestions ── */
+.comfort-suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.comfort-sug{font-size:12px;padding:4px 11px;border-radius:20px;border:1px dashed var(--border2);background:transparent;color:var(--text2);cursor:pointer;transition:all .14s;font-family:'Inter',sans-serif}
+.comfort-sug:hover{background:var(--pink-bg);border-color:#F9A8D4;color:var(--pink);border-style:solid}
+.comfort-loading{font-size:12px;color:var(--text3);font-style:italic;padding:4px 0}
+.comfort-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;margin-bottom:6px;font-family:'Inter',sans-serif;transition:all .12s}
+.comfort-btn:hover{background:var(--surface2)}
+
+/* ── generate btn ── */
+.btn-generate{width:100%;padding:14px;border-radius:var(--radius-sm);background:var(--text);color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;border:none;letter-spacing:.01em;transition:all .18s ease;margin-top:1.25rem;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-generate:hover{background:#333;transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.btn-generate:active{transform:translateY(0)}
+.btn-generate:disabled{background:var(--border2);color:var(--text3);cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{font-size:12px;padding:5px 11px;border-radius:6px;border:1px solid var(--border2);background:transparent;cursor:pointer;color:var(--text2);font-family:'Inter',sans-serif;transition:all .15s}
+.btn-ghost:hover{background:var(--surface2)}
+.error-box{background:var(--red-bg);border:1px solid #FCA5A5;border-radius:var(--radius-sm);padding:10px 13px;margin-top:1rem}
+.error-box .etitle{font-size:12px;font-weight:700;color:var(--red);margin-bottom:3px}
+.error-box .emsg{font-size:11px;color:#991B1B;word-break:break-all;line-height:1.5}
+
+/* ── save defaults banner ── */
+.defaults-bar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--purple-bg);border:1px solid var(--purple-mid);border-radius:var(--radius-sm);margin-bottom:1rem;flex-wrap:wrap}
+.defaults-bar span{font-size:12px;color:var(--purple);flex:1;min-width:120px}
+.btn-save-defaults{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid var(--purple-mid);background:var(--purple-mid);color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all .14s;white-space:nowrap}
+.btn-save-defaults:hover{background:var(--purple)}
+.btn-clear-defaults{font-size:12px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:'Inter',sans-serif;transition:all .12s}
+.defaults-loaded{font-size:11px;color:var(--purple);font-style:italic}
+
+/* ── plan header ── */
+.plan-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:8px;flex-wrap:wrap}
+.plan-topbar h2{font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--text)}
+.plan-hint{font-size:12px;color:var(--text3);margin-bottom:10px}
+.plan-hint strong{color:var(--text2);font-weight:600}
+
+/* ── waste score ── */
+.waste-banner{display:flex;align-items:center;gap:14px;border-radius:var(--radius-sm);padding:11px 15px;margin-bottom:1rem;border:1px solid}
+.wlabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.wsub{font-size:12px;opacity:.8}
+.wpct{font-family:'Lora',serif;font-size:26px;font-weight:600;flex-shrink:0}
+
+/* ── meal rows & drag-drop ── */
+.meal-row{border-bottom:1px solid var(--border);transition:background .12s,opacity .2s,transform .15s;cursor:grab;position:relative}
+.meal-row:last-child{border-bottom:none}
+.meal-row.dragging{opacity:.4;background:var(--surface2)}
+.meal-row.drag-over-top{border-top:2px solid var(--blue-mid)}
+.meal-row.drag-over-bottom{border-bottom:2px solid var(--blue-mid)}
+.meal-row.prep-day-row{background:linear-gradient(135deg,var(--purple-bg) 0%,#fff 60%)}
+.meal-row-top{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;user-select:none}
+.drag-handle{color:var(--text3);font-size:14px;cursor:grab;padding:2px 4px 0 0;flex-shrink:0;opacity:.5;transition:opacity .12s}
+.meal-row:hover .drag-handle{opacity:1}
+.day-chip{min-width:34px;flex-shrink:0;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding-top:3px}
+.day-chip.prep{color:var(--purple)}
+.meal-body{flex:1;min-width:0}
+.meal-name{font-size:14px;font-weight:500;color:var(--text);display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.meal-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.meal-side{font-size:12px;color:var(--text2)}
+.prep-day-label{font-size:11px;color:var(--purple);font-weight:600;letter-spacing:.02em}
+.badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;letter-spacing:.01em}
+.badge-comfort{background:var(--pink-bg);border:1px solid #F9A8D4;color:var(--pink)}
+.badge-occ{background:var(--amber-bg);border:1px solid #FCD34D;color:var(--amber)}
+.badge-xover{background:var(--blue-bg);border:1px solid #93C5FD;color:var(--blue);cursor:pointer}
+.meal-actions{display:flex;gap:6px;flex-shrink:0;padding-top:1px}
+.btn-micro{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;cursor:pointer;color:var(--text2);font-family:'Inter',sans-serif;transition:all .12s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:30px}
+.btn-micro:hover{background:var(--surface2);border-color:var(--text3)}
+
+/* ── recipe panel ── */
+.recipe-panel{margin:0 16px 12px 58px;background:var(--surface2);border-radius:var(--radius-sm);padding:11px 13px;border:1px solid var(--border)}
+.recipe-time{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:9px}
+.recipe-step{display:flex;gap:9px;margin-bottom:7px;align-items:flex-start}
+.recipe-step:last-child{margin-bottom:0}
+.step-num{font-size:10px;font-weight:700;color:var(--text3);min-width:14px;padding-top:2px}
+.step-text{font-size:13px;color:var(--text);line-height:1.55}
+
+/* ── prep day panel ── */
+.prep-panel{margin:0 16px 12px 16px;background:var(--purple-bg);border-radius:var(--radius-sm);padding:12px 14px;border:1px solid var(--purple-mid)}
+.prep-panel h4{font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.prep-task{font-size:13px;color:var(--purple);padding:3px 0;display:flex;gap:8px;align-items:flex-start}
+.prep-task::before{content:"·";font-size:18px;line-height:1;color:var(--purple-mid);margin-top:-2px;flex-shrink:0}
+
+/* ── xover tooltip ── */
+.xover-wrap{position:relative;display:inline-block}
+.xover-tooltip{display:none;position:absolute;top:calc(100% + 7px);left:0;z-index:30;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:9px 11px;min-width:170px;box-shadow:var(--shadow-md)}
+.xover-tooltip.show{display:block}
+.xover-tooltip .xt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:6px}
+.xover-tooltip li{font-size:12px;color:var(--text);padding:2px 0;list-style:none}
+.xover-tooltip li::before{content:"↔ ";color:var(--blue-mid)}
+
+/* ── sides / grocery ── */
+.side-item{font-size:13px;color:var(--text);padding:7px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+.side-item:last-child{border-bottom:none}
+.side-item::before{content:"·";font-size:18px;line-height:1;color:var(--green-mid);margin-top:-1px;flex-shrink:0}
+.grocery-grid{display:grid;grid-template-columns:1fr 1fr}
+.grocery-col{padding:12px 16px;border-right:1px solid var(--border);border-top:1px solid var(--border)}
+.grocery-col:nth-child(even){border-right:none}
+.grocery-col:nth-child(1),.grocery-col:nth-child(2){border-top:none}
+.grocery-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:8px}
+.grocery-item{display:flex;align-items:center;gap:9px;margin-bottom:6px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;padding:3px 0}
+.grocery-item:last-child{margin-bottom:0}
+.g-check{width:22px;height:22px;border-radius:5px;flex-shrink:0;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;transition:all .14s ease}
+.g-check.checked{background:var(--green-mid);border-color:var(--green-mid)}
+.g-check.checked::after{content:"✓";font-size:10px;color:#fff;font-weight:700}
+.g-label{font-size:13px;color:var(--text);line-height:1.4;transition:all .14s}
+.g-label.checked{text-decoration:line-through;color:var(--text3);opacity:.6}
+.grocery-footer{padding:8px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);background:var(--surface2);font-style:italic}
+.stocked-badge{font-size:11px;background:var(--green-bg);border:1px solid var(--green-mid);color:var(--green);padding:2px 9px;border-radius:10px;font-weight:600}
+
+/* ── export bar ── */
+.export-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:11px 16px;border-top:1px solid var(--border);background:var(--surface2)}
+.export-count{font-size:12px;color:var(--text2);flex:1;min-width:100px}
+.btn-export{font-size:12px;font-weight:600;padding:6px 13px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s;border:1px solid}
+.btn-export.copy{background:var(--blue-bg);border-color:#93C5FD;color:var(--blue)}
+.btn-export.print{background:var(--surface);border-color:var(--border2);color:var(--text2)}
+.btn-export.email{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.btn-export:hover{filter:brightness(.95);transform:translateY(-1px)}
+
+/* ── export panel ── */
+.export-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-md);margin-bottom:1rem;overflow:hidden}
+.export-panel-header{background:var(--surface2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.export-panel-header span{font-size:13px;font-weight:600;color:var(--text)}
+.btn-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3);line-height:1;padding:0 2px}
+.export-panel-body{padding:14px 16px}
+.export-preview{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;font-size:11.5px;font-family:'Courier New',monospace;color:var(--text);line-height:1.8;white-space:pre;overflow-x:auto;max-height:160px;overflow-y:auto;margin-bottom:12px}
+.export-actions{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.btn-action{flex:1;min-width:120px;padding:10px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid;font-family:'Inter',sans-serif;transition:all .15s}
+.btn-action.copy-a{background:var(--blue-bg);border-color:#93C5FD;color:var(--blue)}
+.btn-action.print-a{background:var(--surface2);border-color:var(--border2);color:var(--text2)}
+.btn-action.success{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.btn-action:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.email-divider{border-top:1px solid var(--border);padding-top:13px}
+.email-divider .elabel{font-size:12px;color:var(--text2);margin-bottom:7px}
+.email-row{display:flex;gap:8px}
+.btn-send{padding:9px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--green-mid);background:var(--green-mid);color:#fff;font-family:'Inter',sans-serif;white-space:nowrap;transition:all .15s}
+.btn-send.sent{background:var(--green-bg);color:var(--green)}
+.email-note{font-size:11.5px;color:var(--text3);margin-top:7px;line-height:1.5}
+.email-note.success{color:var(--green)}
+.email-note.error{color:var(--red)}
+
+/* ── house rules ── */
+.rules-section{margin-top:1.75rem;margin-bottom:2rem}
+.rules-section h3{font-family:'Lora',serif;font-size:16px;font-weight:600;color:var(--text);margin-bottom:.75rem;text-align:center}
+.rules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.rule-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px;box-shadow:var(--shadow)}
+.rule-card.mantra{grid-column:1/-1;background:var(--green-bg);border-color:var(--green-mid);display:flex;align-items:center;gap:12px;justify-content:center}
+.rule-icon{font-size:22px;line-height:1;margin-bottom:6px}
+.rule-card.mantra .rule-icon{font-size:20px;margin-bottom:0}
+.rule-trigger{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px}
+.rule-card.mantra .rule-trigger{color:var(--green);font-family:'Lora',serif;font-size:13px}
+.rule-action{font-size:12px;color:var(--text2)}
+.rule-card.mantra .rule-action{font-size:13px;font-style:italic;color:var(--green);font-weight:500}
+
+
+/* ---- touch reorder buttons (shown on touch devices) ---- */
+.reorder-btns{display:none;flex-direction:column;gap:2px;flex-shrink:0;padding-top:1px}
+.btn-reorder{width:26px;height:26px;border-radius:5px;border:1px solid var(--border2);background:var(--surface);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all .12s;line-height:1;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-reorder:active{background:var(--surface2)}
+.btn-reorder:disabled{opacity:.25;cursor:default}
+@media(hover:none){.reorder-btns{display:flex}.drag-handle{display:none}}
+
+/* ---- spinner ---- */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--text2);border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+
+/* ── responsive ── */
+@media(max-width:500px){
+  .grocery-grid{grid-template-columns:1fr}
+  .grocery-col:nth-child(even){border-right:none}
+  .grocery-col:nth-child(2){border-top:1px solid var(--border)}
+  .rules-grid{grid-template-columns:1fr}
+  .rule-card.mantra{grid-column:1}
+  .household-row{gap:.75rem}
+}
+
+/* ── history & favourites panel ── */
+.hist-toggle-row{display:flex;justify-content:center;margin-bottom:1rem}
+.btn-hist{font-size:12px;padding:8px 18px;border-radius:20px;border:1px solid var(--amber-mid);background:var(--amber-bg);color:var(--amber);cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-hist:hover{background:var(--amber-mid);color:#fff}
+.history-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:1.5rem;overflow:hidden}
+.history-panel-header{background:var(--surface2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.history-panel-header span{font-size:13px;font-weight:600;color:var(--text)}
+.history-panel-body{padding:14px 16px;max-height:420px;overflow-y:auto}
+.hist-empty{font-size:13px;color:var(--text3);font-style:italic;text-align:center;padding:1rem 0}
+.hist-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:8px}
+.hist-week{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.hist-week:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.hist-week-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px}
+.hist-week-date{font-size:10px;color:var(--text3);font-weight:400;margin-left:5px}
+.hist-meals{display:flex;flex-direction:column;gap:3px}
+.hist-meal-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 6px;border-radius:6px;transition:background .1s}
+.hist-meal-row:hover{background:var(--surface2)}
+.hist-meal-name{font-size:13px;color:var(--text);flex:1}
+.hist-side{font-size:11px;color:var(--text3)}
+.fav-list{display:flex;flex-direction:column;gap:4px;margin-bottom:4px}
+.fav-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 8px;background:var(--amber-bg);border:1px solid #FCD34D;border-radius:8px}
+.fav-name{font-size:13px;color:var(--amber);font-weight:500}
+.fav-side{font-size:11px;color:var(--amber-mid);font-weight:400}
+.btn-unfav{background:none;border:none;color:var(--amber-mid);cursor:pointer;font-size:13px;padding:0 2px;line-height:1;transition:color .12s}
+.btn-unfav:hover{color:var(--red)}
+/* star button on meal rows */
+.btn-star{background:none;border:none;font-size:18px;cursor:pointer;color:var(--text3);padding:3px 5px;line-height:1;transition:all .12s;flex-shrink:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.btn-star:hover{color:var(--amber-mid);transform:scale(1.2)}
+.btn-star.starred{color:var(--amber-mid)}
+/* history save-week bar */
+.save-week-bar{display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--green-bg);border-top:1px solid var(--green-mid);flex-wrap:wrap}
+.save-week-bar span{font-size:12px;color:var(--green);flex:1}
+.btn-save-week{font-size:12px;padding:5px 14px;border-radius:6px;border:1px solid var(--green-mid);background:var(--green-mid);color:#fff;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;transition:all .14s;white-space:nowrap}
+.btn-save-week:hover{background:var(--green)}
+.btn-save-week.saved{background:var(--green-bg);color:var(--green);border-color:var(--green-mid);cursor:default}
+/* repeat warning badge */
+.badge-repeat{background:#FEF3C7;border:1px solid #FCD34D;color:#92400E;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<!-- API KEY BANNER (local mode) -->
+<div style="background:var(--amber-bg);border:1px solid var(--amber-mid);border-radius:var(--radius-sm);padding:12px 15px;margin-bottom:1.25rem;">
+  <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px;">🔑 Anthropic API Key — required to run locally</div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <input type="text" id="api-key-input" placeholder="sk-ant-api03-..."
+      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
+      style="flex:1;min-width:200px;font-family:monospace;font-size:16px;padding:7px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);color:var(--text);outline:none;-webkit-text-security:disc;text-security:disc" />
+    <span id="api-key-status" style="font-size:11px;color:var(--text2);white-space:nowrap"></span>
+  </div>
+  <div style="font-size:11px;color:var(--amber);margin-top:6px;">
+    Get a key at <a href="https://console.anthropic.com" target="_blank" style="color:var(--amber-mid);text-decoration:underline">console.anthropic.com</a> — your key stays in your browser and is only sent to Anthropic's API.
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="header-row">
+    <h1>Family Meal Planner</h1>
+    <button class="btn-ghost" id="edit-settings-btn" style="display:none">Edit settings</button>
+  </div>
+  <p class="tagline">7 days · smart ingredient crossover · low effort · made for family life</p>
+</header>
+
+<!-- SETTINGS -->
+<div id="settings-panel">
+
+  <!-- defaults bar (shown when saved defaults exist) -->
+  <div class="defaults-bar" id="defaults-bar" style="display:none">
+    <span id="defaults-msg">Saved defaults loaded ✓</span>
+    <button class="btn-clear-defaults">Clear</button>
+  </div>
+
+  <div class="settings-card">
+
+    <!-- Household size -->
+    <div class="settings-section">
+      <div class="sec-label">Household size</div>
+      <div class="household-row">
+        <div class="hh-field">
+          <label>Adults</label>
+          <div class="hh-stepper">
+            <button class="hh-btn">−</button>
+            <div class="hh-val" id="adults-val">2</div>
+            <button class="hh-btn">+</button>
+          </div>
+        </div>
+        <div class="hh-field">
+          <label>Children</label>
+          <div class="hh-stepper">
+            <button class="hh-btn">−</button>
+            <div class="hh-val" id="children-val">0</div>
+            <button class="hh-btn">+</button>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--text3);padding-top:2px" id="hh-serving-note">Recipes scaled for 2 adults</div>
+      </div>
+    </div>
+
+    <!-- Cuisines -->
+    <div class="settings-section">
+      <div class="sec-label">Cuisine types — once = always · twice = occasional · three times = off</div>
+      <div class="toggle-group" id="cuisine-toggles">
+        <button class="cuisine-tog" data-cuisine="Chinese home cooking"  data-state="off"><span class="dot"></span>Chinese home<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Japanese home cooking" data-state="off"><span class="dot"></span>Japanese home<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Thai"                  data-state="off"><span class="dot"></span>Thai<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Western comfort food"  data-state="off"><span class="dot"></span>Western<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Italian"               data-state="off"><span class="dot"></span>Italian<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Mexican"               data-state="off"><span class="dot"></span>Mexican<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Mediterranean"         data-state="off"><span class="dot"></span>Mediterranean<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Indian"                data-state="off"><span class="dot"></span>Indian<span class="st"></span></button>
+      </div>
+    </div>
+
+    <!-- Comfort meal -->
+    <div class="settings-section">
+      <div class="sec-label">Comfort meal this week</div>
+      <button class="comfort-btn" id="sug-btn">✦ Suggest options for my cuisines</button>
+      <div class="comfort-suggestions" id="comfort-suggestions"></div>
+      <div id="comfort-sug-hint" style="display:none;font-size:11px;color:var(--text3);margin-top:5px">Pick one or more — they'll all be considered for the comfort slot</div>
+      <input type="text" id="comfort-input" placeholder="e.g. pasta bolognese, soy-braised ribs… or pick a suggestion above">
+    </div>
+
+    <!-- Sides -->
+    <div class="settings-section">
+      <div class="sec-label">Side dish styles — pick any</div>
+      <div class="chip-group" id="sides-chips">
+        <button class="chip">5-min pantry sides</button>
+        <button class="chip">Steamed veg</button>
+        <button class="chip">Pickled / fermented</button>
+        <button class="chip">Egg-based</button>
+        <button class="chip">Garlic &amp; sauté</button>
+        <button class="chip">Fresh salads</button>
+        <button class="chip">Skip sides</button>
+      </div>
+    </div>
+
+    <!-- Health focus -->
+    <div class="settings-section">
+      <div class="sec-label">Health focus</div>
+      <div class="chip-group" id="health-chips">
+        <button class="chip active">Balanced</button>
+        <button class="chip">High protein</button>
+        <button class="chip">More vegetables</button>
+        <button class="chip">Light / low-carb</button>
+        <button class="chip">Kid-friendly</button>
+      </div>
+    </div>
+
+    <!-- Meal prep day -->
+    <div class="settings-section">
+      <div class="sec-label">Meal prep day (optional) — we'll plan batch prep tasks for this day</div>
+      <div class="chip-group" id="prep-day-chips">
+        <button class="chip prep-day" data-day="0">Mon</button>
+        <button class="chip prep-day" data-day="1">Tue</button>
+        <button class="chip prep-day" data-day="2">Wed</button>
+        <button class="chip prep-day" data-day="3">Thu</button>
+        <button class="chip prep-day" data-day="4">Fri</button>
+        <button class="chip prep-day active" data-day="5">Sat</button>
+        <button class="chip prep-day" data-day="6">Sun</button>
+        <button class="chip prep-day" data-day="-1">None</button>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="gen-btn">Generate this week's plan →</button>
+    <div id="error-box" class="error-box" style="display:none"></div>
+  </div>
+
+  <!-- save defaults -->
+  <div style="text-align:center;margin-bottom:1.5rem">
+    <button class="btn-save-defaults">Save these settings as my defaults</button>
+    <div class="defaults-loaded" id="save-confirm" style="display:none;margin-top:5px">Settings saved ✓</div>
+  </div>
+
+</div><!-- /settings-panel -->
+
+<!-- HISTORY & FAVOURITES -->
+<div class="hist-toggle-row">
+  <button class="btn-hist" id="history-btn">★ History &amp; favourites</button>
+</div>
+<div class="history-panel" id="history-panel" style="display:none">
+  <div class="history-panel-header">
+    <span>History &amp; favourites</span>
+    <button class="btn-close">×</button>
+  </div>
+  <div class="history-panel-body" id="history-panel-body"></div>
+</div>
+
+<!-- PLAN OUTPUT -->
+<div id="plan-output" style="display:none">
+
+  <div class="waste-banner" id="waste-banner">
+    <div style="flex:1"><div class="wlabel" id="waste-label"></div><div class="wsub" id="waste-sub"></div></div>
+    <div class="wpct" id="waste-pct"></div>
+  </div>
+
+
+  <div class="save-week-bar" id="save-week-bar">
+    <span id="save-week-msg">Save this week to history so next week avoids repeats</span>
+    <button class="btn-save-week" id="save-week-btn">Save this week ✓</button>
+  </div>
+
+  <div class="plan-topbar">
+    <h2>This week's plan</h2>
+  </div>
+  <p class="plan-hint">Drag meals to reorder · <strong>how-to</strong> for a recipe · <strong>swap</strong> to replace</p>
+
+  <div class="card" id="meals-card"></div>
+
+  <div class="card">
+    <div class="card-header">Always-available sides (5 min)</div>
+    <div id="sides-list"></div>
+  </div>
+
+  <div class="card" id="grocery-card">
+    <div class="card-header">
+      <span>Shopping list — fresh items only</span>
+      <span class="stocked-badge" id="stocked-badge" style="display:none"></span>
+    </div>
+    <div class="grocery-grid" id="grocery-grid"></div>
+    <div class="grocery-footer">Pantry staples assumed stocked — oil, soy sauce, vinegar, sugar, salt, garlic, ginger not listed.</div>
+    <div class="export-bar">
+      <span class="export-count" id="export-count"></span>
+      <button class="btn-export copy">Copy list</button>
+      <button class="btn-export email">Email to me</button>
+      <button class="btn-export print">Print / PDF</button>
+    </div>
+  </div>
+
+  <div class="export-panel" id="export-panel" style="display:none">
+    <div class="export-panel-header">
+      <span id="export-title">Export shopping list</span>
+      <button class="btn-close">×</button>
+    </div>
+    <div class="export-panel-body">
+      <div class="export-preview" id="export-preview"></div>
+      <div class="export-actions">
+        <button class="btn-action copy-a" id="copy-btn">Copy to clipboard</button>
+        <button class="btn-action print-a" id="print-btn">Print / save PDF</button>
+      </div>
+      <div class="email-divider">
+        <div class="elabel">Or email to yourself</div>
+        <div class="email-row">
+          <input type="email" id="email-input" placeholder="you@example.com" style="flex:1">
+          <button class="btn-send" id="send-btn">Send</button>
+        </div>
+        <div class="email-note" id="email-note">Opens your mail app with the list pre-filled — nothing is sent to any server.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rules-section">
+    <h3>House rules</h3>
+    <div class="rules-grid">
+      <div class="rule-card"><div class="rule-icon">☁️</div><div class="rule-trigger">Bad day</div><div class="rule-action">eggs + rice</div></div>
+      <div class="rule-card"><div class="rule-icon">😴</div><div class="rule-trigger">No energy</div><div class="rule-action">noodles</div></div>
+      <div class="rule-card"><div class="rule-icon">♻️</div><div class="rule-trigger">Cook extra</div><div class="rule-action">→ becomes fried rice</div></div>
+      <div class="rule-card"><div class="rule-icon">⚡</div><div class="rule-trigger">Feeling tired</div><div class="rule-action">skip the sides</div></div>
+      <div class="rule-card mantra">
+        <div class="rule-icon">✦</div>
+        <div><div class="rule-trigger">Always remember</div><div class="rule-action">good enough &gt; perfect</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /plan-output -->
+</div><!-- /app-wrap -->
+
+<script>
+/* --- iOS-safe localStorage wrapper ---
+   localStorage can be blocked in some iOS WebView contexts.
+   lsGet/lsSet/lsRemove fall back to in-memory store silently. */
+var _memStore = {};
+var _ls = (function(){ try { localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return localStorage; } catch(e){ return null; } })();
+function lsGet(k)    { try { return _ls ? _ls.getItem(k) : (_memStore[k]||null); } catch(e){ return _memStore[k]||null; } }
+function lsSet(k,v)  { try { if(_ls) _ls.setItem(k,v); else _memStore[k]=v; } catch(e){ _memStore[k]=v; } }
+function lsRemove(k) { try { if(_ls) _ls.removeItem(k); else delete _memStore[k]; } catch(e){ delete _memStore[k]; } }
+
+/* --- API KEY --- */
+function saveApiKey(val) {
+  const trimmed = val.trim();
+  lsSet('mealplanner_apikey', trimmed);
+  const status = document.getElementById('api-key-status');
+  if (trimmed.startsWith('sk-ant-')) {
+    status.textContent = '✓ Key saved';
+    status.style.color = 'var(--green)';
+  } else if (trimmed.length > 0) {
+    status.textContent = '⚠ Looks wrong — should start with sk-ant-';
+    status.style.color = 'var(--amber)';
+  } else {
+    status.textContent = '';
+  }
+}
+
+function getApiKey() {
+  return lsGet('mealplanner_apikey') || '';
+}
+
+function getHeaders() {
+  const key = getApiKey();
+  const headers = { 'Content-Type': 'application/json' };
+  if (key) {
+    headers['x-api-key'] = key;
+    headers['anthropic-version'] = '2023-06-01';
+    headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  }
+  return headers;
+}
+
+let currentPlan  = null;
+let checkedItems = new Set();
+let swappingIdx  = null;
+let household    = { adults:2, children:0 };
+let prepDayIdx   = 5; // Saturday default; -1 = none
+const DAYS       = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const recipeCache = {};
+let dragSrcIdx   = null;
+let comfortSuggestions = [];
+
+/* ════════════════════════════════════════════════════════════════════════
+   DEFAULTS — localStorage persistence
+═══════════════════════════════════════════════════════════════════════ */
+function getSettingsSnapshot() {
+  const cuisines = {};
+  document.querySelectorAll('.cuisine-tog').forEach(b => cuisines[b.dataset.cuisine] = b.dataset.state);
+  return {
+    cuisines,
+    sides:    [...document.querySelectorAll('#sides-chips .chip.active')].map(b=>b.textContent.trim()),
+    health:   document.querySelector('#health-chips .chip.active')?.textContent.trim() || 'Balanced',
+    comfort:  document.getElementById('comfort-input').value.trim(),
+    prepDay:  prepDayIdx,
+    adults:   household.adults,
+    children: household.children,
+  };
+}
+
+function applySettingsSnapshot(s) {
+  if (!s) return;
+  // cuisines
+  if (s.cuisines) {
+    document.querySelectorAll('.cuisine-tog').forEach(b => {
+      const state = s.cuisines[b.dataset.cuisine] || 'off';
+      b.dataset.state = state;
+      const st = b.querySelector('.st');
+      if (st) st.textContent = state==='yes'?' always':state==='occ'?' occasional':'';
+    });
+  }
+  // sides
+  if (s.sides) {
+    document.querySelectorAll('#sides-chips .chip').forEach(b => {
+      b.classList.toggle('active', s.sides.includes(b.textContent.trim()));
+    });
+  }
+  // health
+  if (s.health) {
+    document.querySelectorAll('#health-chips .chip').forEach(b => {
+      b.classList.toggle('active', b.textContent.trim()===s.health);
+    });
+  }
+  // comfort
+  if (s.comfort !== undefined) document.getElementById('comfort-input').value = s.comfort;
+  // prep day
+  if (s.prepDay !== undefined) {
+    prepDayIdx = s.prepDay;
+    document.querySelectorAll('.chip.prep-day').forEach(b => {
+      b.classList.toggle('active', parseInt(b.dataset.day)===prepDayIdx);
+    });
+  }
+  // household
+  if (s.adults   !== undefined) { household.adults   = s.adults;   updateHHDisplay(); }
+  if (s.children !== undefined) { household.children = s.children; updateHHDisplay(); }
+}
+
+function saveDefaults() {
+  lsSet('mealplanner_defaults', JSON.stringify(getSettingsSnapshot()));
+  const c = document.getElementById('save-confirm');
+  c.style.display = 'block';
+  setTimeout(()=>c.style.display='none', 2500);
+  showDefaultsBar(true);
+}
+
+function clearDefaults() {
+  lsRemove('mealplanner_defaults');
+  showDefaultsBar(false);
+}
+
+function loadDefaults() {
+  const raw = lsGet('mealplanner_defaults');
+  if (!raw) return;
+  try {
+    applySettingsSnapshot(JSON.parse(raw));
+    showDefaultsBar(true);
+  } catch(e) {}
+}
+
+function showDefaultsBar(has) {
+  const bar = document.getElementById('defaults-bar');
+  bar.style.display = has ? 'flex' : 'none';
+  if (has) document.getElementById('defaults-msg').textContent = 'Saved defaults loaded ✓';
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   HOUSEHOLD
+═══════════════════════════════════════════════════════════════════════ */
+function adjustHH(field, delta) {
+  household[field] = Math.max(0, Math.min(10, household[field]+delta));
+  if (field==='adults' && household.adults===0 && household.children===0) household.adults=1;
+  updateHHDisplay();
+}
+
+function updateHHDisplay() {
+  document.getElementById('adults-val').textContent   = household.adults;
+  document.getElementById('children-val').textContent = household.children;
+  const total = household.adults + Math.ceil(household.children * 0.6);
+  const parts = [];
+  if (household.adults)   parts.push(`${household.adults} adult${household.adults>1?'s':''}`);
+  if (household.children) parts.push(`${household.children} child${household.children>1?'ren':''}`);
+  document.getElementById('hh-serving-note').textContent =
+    `Recipes scaled for ${parts.join(' + ')} (~${total} full servings)`;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   CUISINE / CHIPS
+═══════════════════════════════════════════════════════════════════════ */
+function cycleCuisine(btn) {
+  const s  = btn.dataset.state;
+  const st = btn.querySelector('.st');
+  if (s==='off')      { btn.dataset.state='yes'; if(st) st.textContent=' always'; }
+  else if (s==='yes') { btn.dataset.state='occ'; if(st) st.textContent=' occasional'; }
+  else                { btn.dataset.state='off'; if(st) st.textContent=''; }
+}
+function toggleChip(btn)   { btn.classList.toggle('active'); }
+function selectHealth(btn) { document.querySelectorAll('#health-chips .chip').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+function selectPrepDay(btn) {
+  prepDayIdx = parseInt(btn.dataset.day);
+  document.querySelectorAll('.chip.prep-day').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleSettings() {
+  const p = document.getElementById('settings-panel');
+  const b = document.getElementById('edit-settings-btn');
+  const showing = p.style.display!=='none';
+  p.style.display = showing?'none':'block';
+  b.textContent   = showing?'Edit settings':'Hide settings';
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   COMFORT SUGGESTIONS
+═══════════════════════════════════════════════════════════════════════ */
+async function getSuggestions() {
+  const btn = document.getElementById('sug-btn');
+  const box = document.getElementById('comfort-suggestions');
+  btn.disabled = true;
+  btn.textContent = '…loading suggestions';
+  box.innerHTML = '<span class="comfort-loading">Thinking of ideas…</span>';
+
+  const cuisines = [...document.querySelectorAll('.cuisine-tog')].filter(b=>b.dataset.state!=='off')
+    .map(b=>b.dataset.cuisine);
+  const cuisineStr = cuisines.length ? cuisines.join(', ') : 'any home cooking style';
+  const health  = document.querySelector('#health-chips .chip.active')?.textContent.trim() || 'Balanced';
+  const adults  = household.adults;
+  const children= household.children;
+
+  const prompt = `Suggest exactly 4 comfort meal ideas for a family (${adults} adult${adults!==1?'s':''}, ${children} child${children!==1?'ren':''}).
+Cuisine styles available: ${cuisineStr}. Health focus normally: ${health}.
+For comfort day, allow richer flavours and more indulgent ingredients — this is the 1 treat meal of the week.
+Each suggestion should be distinct, family-friendly, and recognisable.
+Return ONLY valid JSON, no markdown: {"suggestions":["meal name","meal name","meal name","meal name"]}`;
+
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:getHeaders(),
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:200,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const raw  = (data.content||[]).map(b=>b.text||'').join('');
+    const m    = raw.match(/\{[\s\S]*\}/);
+    if (m) {
+      const parsed = JSON.parse(m[0]);
+      comfortSuggestions = parsed.suggestions || [];
+      selectedComforts = new Set();
+      document.getElementById('comfort-sug-hint').style.display='block';
+      box.innerHTML = comfortSuggestions.map(s => {
+        const safeVal = s.replace(/"/g, "&quot;");
+        return `<button class="comfort-sug" data-val="${safeVal}"><span class="sug-check">+ </span>${s}</button>`;
+      }).join('');
+    } else { box.innerHTML = ''; }
+  } catch(e) { box.innerHTML = '<span class="comfort-loading">Couldn\'t load suggestions — try again.</span>'; }
+
+  btn.disabled = false;
+  btn.textContent = '✦ Suggest options for my cuisines';
+}
+
+let selectedComforts = new Set();
+function toggleComfort(val) {
+  if (selectedComforts.has(val)) {
+    selectedComforts.delete(val);
+  } else {
+    selectedComforts.add(val);
+  }
+  // Update input field
+  const list = [...selectedComforts];
+  document.getElementById('comfort-input').value = list.join(', ');
+  // Update button styles
+  document.querySelectorAll('.comfort-sug').forEach(b => {
+    const bVal = b.dataset.val;
+    const active = selectedComforts.has(bVal);
+    b.style.background   = active ? 'var(--pink-bg)' : '';
+    b.style.borderColor  = active ? '#F9A8D4'        : '';
+    b.style.color        = active ? 'var(--pink)'    : '';
+    b.style.borderStyle  = active ? 'solid'          : 'dashed';
+    b.querySelector('.sug-check').textContent = active ? '✓ ' : '+ ';
+  });
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   BUILD PROMPT
+═══════════════════════════════════════════════════════════════════════ */
+function buildMainPrompt() {
+  const cuisines = [];
+  document.querySelectorAll('.cuisine-tog').forEach(b => {
+    if (b.dataset.state!=='off')
+      cuisines.push(`${b.dataset.cuisine} (${b.dataset.state==='yes'?'regular':'occasional, max once'})`);
+  });
+  const cuisineStr = cuisines.length ? cuisines.join(', ') : 'simple home cooking, any style';
+  const sides      = [...document.querySelectorAll('#sides-chips .chip.active')].map(b=>b.textContent.trim());
+  const sidesStr   = sides.length ? sides.join(', ') : 'any quick sides';
+  const health     = document.querySelector('#health-chips .chip.active')?.textContent.trim() || 'Balanced';
+  const comfort    = document.getElementById('comfort-input').value.trim() || 'choose one classic comfort dish';
+  const servings   = household.adults + Math.ceil(household.children*0.6);
+  const hhDesc     = `${household.adults} adult${household.adults!==1?'s':''}${household.children?` and ${household.children} child${household.children!==1?'ren':''}`:''} (scale recipes for ~${servings} full servings)`;
+  const prepNote   = prepDayIdx>=0
+    ? `Day ${prepDayIdx+1} (${DAYS[prepDayIdx]}) is a meal prep day. That day still needs a normal easy meal. Additionally, for that day's entry only, include a "prep_tasks" array of 4-6 batch prep tasks to do alongside cooking (e.g. "Quick-pickle cucumber", "Blanch and portion broccoli", "Double batch of rice for the week"). All other days must have "prep_tasks":[] (empty array).`
+    : 'No dedicated meal prep day. Every meal entry must have "prep_tasks":[] (empty array).';
+
+  // Build history & favourites context
+  const histCtx = buildHistoryContext();
+
+  return `You are a practical family meal planner focused on minimising food waste.
+Return ONLY valid JSON — no markdown, no explanation.
+
+${histCtx}Settings:
+- Household: ${hhDesc}
+- Cuisines: ${cuisineStr}
+- Side styles: ${sidesStr}
+- Health focus: ${health}
+- Comfort meal: ${comfort} (this is the one indulgent meal of the week — allow richer flavours)
+
+Hard rules:
+- Exactly 7 meals, one per day Mon through Sun — ALL 7 days must have a real meal, no exceptions
+- Occasional cuisines appear at most once
+- Day 7 (Sun) should be fried rice to use up leftovers (unless that's the prep day, then Day 6 gets fried rice)
+- Low-effort on regular days; comfort meal can take a bit longer
+- Tag the comfort meal "comfort", occasional cuisine meals "occasional"
+- ${prepNote}
+
+INGREDIENT CROSSOVER — most important constraint:
+Sequence meals so fresh ingredients from one day reuse in adjacent days.
+For each meal from Day 2 onward, list specific fresh ingredients shared with the PREVIOUS day in "crossover".
+Aim for 1-2 crossover ingredients between consecutive days.
+
+Grocery: fresh/specialty items ONLY — no pantry staples (no salt, pepper, oil, soy sauce, vinegar, sugar, garlic, onion, ginger).
+
+Return exactly this JSON shape — every meal object must include prep_tasks:
+{
+  "meals": [{
+    "num":1, "main":"dish name", "side":"side or empty",
+    "tags":[], "key_ingredients":["fresh ingredient"], "crossover":[], "prep_tasks":[]
+  }],
+  "always_sides": ["side name: tip under 8 words"],
+  "grocery": {
+    "Protein":["specific cuts"], "Carbs & grains":["items"],
+    "Fresh veg":["veg"], "Specialty":["non-staple items"]
+  }
+}`;
+}
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   SAVE WEEK TO HISTORY
+═══════════════════════════════════════════════════════════════════════ */
+function doSaveWeek() {
+  if (!currentPlan) return;
+  const weekLabel = new Date().toLocaleDateString('en-CA');
+  saveWeekToHistory(currentPlan, weekLabel);
+  const btn = document.getElementById('save-week-btn');
+  const msg = document.getElementById('save-week-msg');
+  btn.textContent = 'Saved ✓';
+  btn.classList.add('saved');
+  msg.textContent = 'Saved! Next week\'s plan will avoid repeating more than ' + MAX_REPEATS + ' of these meals.';
+  renderHistoryPanel();
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   GENERATE
+═══════════════════════════════════════════════════════════════════════ */
+async function generatePlan() {
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Planning your week…';
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('plan-output').style.display = 'none';
+  checkedItems = new Set();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:getHeaders(),
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:2200,
+        messages:[{role:'user',content:buildMainPrompt()}]})
+    });
+    if (!res.ok) { const t=await res.text(); showError(`API ${res.status}: ${t.slice(0,200)}`); return; }
+    const data = await res.json();
+    if (data.error) { showError(data.error.message||'Unknown API error'); return; }
+    const raw  = (data.content||[]).map(b=>b.text||'').join('');
+    const m    = raw.match(/\{[\s\S]*\}/);
+    if (!m) { showError('No JSON in response: '+raw.slice(0,200)); return; }
+    let plan;
+    try { plan = JSON.parse(m[0]); } catch(e) { showError('JSON parse error: '+e.message); return; }
+    plan.meals = (plan.meals||[]).map((meal,i)=>({
+      ...meal, tags:meal.tags||[], crossover:i===0?[]:(meal.crossover||[]),
+      key_ingredients:meal.key_ingredients||[]
+    }));
+    currentPlan = plan;
+    Object.keys(recipeCache).forEach(k=>delete recipeCache[k]);
+    renderPlan(plan);
+    document.getElementById('settings-panel').style.display='none';
+    document.getElementById('edit-settings-btn').style.display='inline-block';
+    document.getElementById('plan-output').style.display='block';
+    // Reset save-week bar
+    const swb = document.getElementById('save-week-btn');
+    const swm = document.getElementById('save-week-msg');
+    if (swb) { swb.textContent='Save this week ✓'; swb.classList.remove('saved'); }
+    if (swm) swm.textContent='Save this week to history so next week avoids repeats';
+  } catch(e) { showError('Unexpected error: '+e.message); }
+
+  btn.disabled=false;
+  btn.innerHTML='Generate this week\'s plan →';
+}
+
+function showError(msg) {
+  const b=document.getElementById('error-box');
+  b.innerHTML=`<div class="etitle">Generation failed</div><div class="emsg">${msg}</div>`;
+  b.style.display='block';
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   RENDER
+═══════════════════════════════════════════════════════════════════════ */
+function renderPlan(plan) {
+  renderWasteScore(plan.meals);
+  renderMeals(plan.meals, plan.prep_tasks||[]);
+  renderSides(plan.always_sides);
+  renderGrocery(plan.grocery);
+  updateExportCount();
+}
+
+function renderWasteScore(meals) {
+  const real  = meals.filter(m=>!m.tags?.includes('prep'));
+  const total = real.reduce((s,m)=>s+(m.crossover?.length||0),0);
+  const maxP  = (real.length-1)*2;
+  const pct   = maxP>0 ? Math.round(total/maxP*100) : 0;
+  const [label,bg,border,col] = pct>=70
+    ? ['Great overlap — minimal waste','var(--green-bg)','var(--green-mid)','var(--green)']
+    : pct>=40
+    ? ['Good overlap','var(--amber-bg)','var(--amber-mid)','var(--amber)']
+    : ['Low overlap','var(--red-bg)','#FCA5A5','var(--red)'];
+  const banner = document.getElementById('waste-banner');
+  banner.style.background = bg;
+  banner.style.borderColor = border;
+  document.getElementById('waste-label').style.color = col;
+  document.getElementById('waste-label').textContent = `Ingredient overlap — ${label}`;
+  document.getElementById('waste-sub').style.color   = col;
+  document.getElementById('waste-sub').textContent   = `${total} shared ingredient${total!==1?'s':''} across the week`;
+  document.getElementById('waste-pct').style.color   = col;
+  document.getElementById('waste-pct').textContent   = pct+'%';
+}
+
+function safeAttr(s) {
+  return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderMeals(meals, prepTasks) {
+  const card   = document.getElementById('meals-card');
+  const lastWk = lastWeekMealNames();
+  card.innerHTML = meals.map((meal,i) => {
+    const isPrepDay = (prepDayIdx >= 0 && i === prepDayIdx);
+    const mealPrep  = (meal.prep_tasks && meal.prep_tasks.length > 0) ? meal.prep_tasks : (isPrepDay ? (prepTasks||[]) : []);
+    const isComfort = meal.tags?.includes('comfort');
+    const isOcc     = meal.tags?.includes('occasional');
+    const xover     = meal.crossover?.length ? meal.crossover : null;
+    const dayLabel  = DAYS[i] || ('Day ' + (i+1));
+    const isRepeat  = lastWk.includes(normaliseName(meal.main));
+    const isFav     = isFavourite(meal.main);
+
+    const xoverBadge = xover
+      ? '<span class="xover-wrap"><span class="badge badge-xover">\u2194 reuses '
+        + xover.length + ' ingredient' + (xover.length>1?'s':'')
+        + '</span><div class="xover-tooltip"><div class="xt">Shared with day before</div><ul>'
+        + xover.map(x=>'<li>'+safeAttr(x)+'</li>').join('')
+        + '</ul></div></span>'
+      : '';
+
+    const badges =
+      (isComfort ? '<span class="badge badge-comfort">comfort</span>' : '')
+      + (isOcc    ? '<span class="badge badge-occ">occasional</span>'  : '')
+      + (isRepeat ? '<span class="badge badge-repeat" title="Also appeared last week">repeat</span>' : '')
+      + xoverBadge;
+
+    const starBtn =
+      '<button class="btn-star' + (isFav?' starred':'')
+      + '" data-idx="' + i + '" title="'
+      + (isFav ? 'Remove from favourites' : 'Add to favourites') + '">'
+      + (isFav ? '\u2605' : '\u2606') + '</button>';
+
+    const swapBtn = '<button class="btn-micro" id="swap-btn-' + i + '">swap</button>';
+    const recBtn  = '<button class="btn-micro" id="recipe-btn-' + i + '">how-to</button>';
+    const prepBtn = '<button class="btn-micro" id="prep-btn-' + i + '">prep tasks \u25bc</button>';
+
+    const dayClass  = isPrepDay ? 'day-chip prep' : 'day-chip';
+    const rowClass  = isPrepDay ? 'meal-row prep-day-row' : 'meal-row';
+    const sideHtml  = meal.side ? '<span class="meal-side">Side: ' + safeAttr(meal.side) + '</span>' : '';
+    const prepLabel = isPrepDay ? '<span class="prep-day-label">\u2726 prep day</span>' : '';
+
+    let actionsHtml = '<div class="meal-actions">' + starBtn;
+    if (isPrepDay && mealPrep.length > 0) actionsHtml += prepBtn;
+    actionsHtml += swapBtn + recBtn + '</div>';
+
+    var upDis = (i === 0) ? ' disabled' : '';
+    var dnDis = (i === meals.length - 1) ? ' disabled' : '';
+    var reorderBtns = '<div class="reorder-btns">'
+      + '<button class="btn-reorder" data-idx="' + i + '" data-dir="-1"' + upDis + '>\u2191</button>'
+      + '<button class="btn-reorder" data-idx="' + i + '" data-dir="1"' + dnDis + '>\u2193</button>'
+      + '</div>';
+
+    let innerHtml = '<div class="meal-row-top">'
+      + '<div class="drag-handle" title="Drag to reorder">\u28BF</div>'
+      + reorderBtns
+      + '<div class="' + dayClass + '">' + dayLabel + '</div>'
+      + '<div class="meal-body">'
+      + '<div class="meal-name">' + safeAttr(meal.main) + ' ' + badges + '</div>'
+      + '<div class="meal-meta">' + sideHtml + prepLabel + '</div>'
+      + '</div>'
+      + actionsHtml
+      + '</div>';
+
+    if (isPrepDay && mealPrep.length > 0) {
+      innerHtml += '<div class="prep-panel" id="prep-panel-' + i + '" style="display:none">'
+        + '<h4>Prep tasks for ' + dayLabel + '</h4>'
+        + mealPrep.map(t=>'<div class="prep-task">'+safeAttr(t)+'</div>').join('')
+        + '</div>';
+    }
+
+    innerHtml += '<div class="recipe-panel" id="recipe-panel-' + i + '" style="display:none"></div>';
+
+    return '<div class="' + rowClass + '" id="meal-row-' + i + '" draggable="true">'
+      + innerHtml + '</div>';
+  }).join('');
+}
+
+/* star click — uses data-idx, no fragile string encoding */
+function starClick(btn) {
+  const idx  = parseInt(btn.dataset.idx);
+  const meal = currentPlan && currentPlan.meals[idx];
+  if (!meal) return;
+  toggleFavUI(meal.main, meal.side||'', btn);
+}
+function renderSides(sides) {
+  document.getElementById('sides-list').innerHTML =
+    (sides||[]).map(s=>`<div class="side-item">${s}</div>`).join('');
+}
+
+function renderGrocery(grocery) {
+  document.getElementById('grocery-grid').innerHTML =
+    Object.entries(grocery).map(([cat,items])=>`
+      <div class="grocery-col">
+        <div class="grocery-cat">${cat}</div>
+        ${items.map(item=>`
+          <div class="grocery-item" data-item="${item.replace(/"/g,'&quot;')}">
+            <div class="g-check ${checkedItems.has(item)?'checked':''}" id="chk-${cssEsc(item)}"></div>
+            <div class="g-label ${checkedItems.has(item)?'checked':''}" id="lbl-${cssEsc(item)}">${item}</div>
+          </div>`).join('')}
+      </div>`).join('');
+}
+
+function cssEsc(s) { return s.replace(/[^\w-]/g,'_'); }
+
+/* --- tap reorder for touch --- */
+function reorderMeal(btn) {
+  var idx = parseInt(btn.dataset.idx);
+  var dir = parseInt(btn.dataset.dir);
+  var target = idx + dir;
+  if (!currentPlan || target < 0 || target >= currentPlan.meals.length) return;
+  var meals = currentPlan.meals.slice();
+  var moved = meals.splice(idx, 1)[0];
+  meals.splice(target, 0, moved);
+  currentPlan.meals = meals;
+  Object.keys(recipeCache).forEach(function(k){ delete recipeCache[k]; });
+  renderMeals(meals, currentPlan.prep_tasks || []);
+  renderWasteScore(meals);
+}
+
+/* --- drag & drop reorder (desktop) --- */
+function dragStart(e, idx) {
+  if (currentPlan.meals[idx].main==='Meal prep day') { e.preventDefault(); return; }
+  dragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(()=>document.getElementById(`meal-row-${idx}`)?.classList.add('dragging'),0);
+}
+
+function dragEnd(e) {
+  document.querySelectorAll('.meal-row').forEach(r=>r.classList.remove('dragging','drag-over-top','drag-over-bottom'));
+  dragSrcIdx = null;
+}
+
+function dragOver(e, idx) {
+  e.preventDefault();
+  if (dragSrcIdx===null || dragSrcIdx===idx) return;
+  if (currentPlan.meals[idx].main==='Meal prep day') return;
+  const row  = document.getElementById(`meal-row-${idx}`);
+  const rect = row.getBoundingClientRect();
+  const mid  = rect.top + rect.height/2;
+  document.querySelectorAll('.meal-row').forEach(r=>r.classList.remove('drag-over-top','drag-over-bottom'));
+  row.classList.add(e.clientY < mid ? 'drag-over-top' : 'drag-over-bottom');
+}
+
+function dragLeave(e, idx) {
+  document.getElementById(`meal-row-${idx}`)?.classList.remove('drag-over-top','drag-over-bottom');
+}
+
+function dragDrop(e, targetIdx) {
+  e.preventDefault();
+  if (dragSrcIdx===null || dragSrcIdx===targetIdx) return;
+  if (currentPlan.meals[targetIdx].main==='Meal prep day') return;
+
+  const row   = document.getElementById(`meal-row-${targetIdx}`);
+  const rect  = row.getBoundingClientRect();
+  const after = e.clientY >= rect.top + rect.height/2;
+
+  const meals = [...currentPlan.meals];
+  const [moved] = meals.splice(dragSrcIdx, 1);
+  let insertAt  = targetIdx;
+  if (dragSrcIdx < targetIdx) insertAt = after ? targetIdx : targetIdx-1;
+  else                        insertAt = after ? targetIdx+1 : targetIdx;
+  insertAt = Math.max(0, Math.min(meals.length, insertAt));
+  meals.splice(insertAt, 0, moved);
+  currentPlan.meals = meals;
+  Object.keys(recipeCache).forEach(k=>delete recipeCache[k]);
+  renderMeals(meals, currentPlan.prep_tasks||[]);
+  renderWasteScore(meals);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   RECIPE / PREP EXPAND
+═══════════════════════════════════════════════════════════════════════ */
+function togglePrepPanel(idx) {
+  const panel = document.getElementById(`prep-panel-${idx}`);
+  const btn   = document.getElementById(`prep-btn-${idx}`);
+  const open  = panel.style.display!=='none';
+  panel.style.display = open?'none':'block';
+  btn.textContent = open?'tasks ▼':'▲ hide';
+}
+
+async function toggleRecipe(idx) {
+  const panel = document.getElementById(`recipe-panel-${idx}`);
+  const btn   = document.getElementById(`recipe-btn-${idx}`);
+  if (panel.style.display!=='none') { panel.style.display='none'; btn.textContent='how-to'; return; }
+  if (recipeCache[idx])             { panel.innerHTML=recipeCache[idx]; panel.style.display='block'; btn.textContent='▲'; return; }
+
+  panel.innerHTML = '<div class="recipe-time">Loading…</div>';
+  panel.style.display='block'; btn.textContent='▲';
+
+  const meal    = currentPlan.meals[idx];
+  const servings= household.adults + Math.ceil(household.children*0.6);
+  const prompt  = `Simple home-cook recipe for "${meal.main}"${meal.side?`, served with: ${meal.side}`:''}.
+Scale for ${servings} servings (household: ${household.adults} adult${household.adults!==1?'s':''}${household.children?`, ${household.children} child${household.children!==1?'ren':''}`:''}).
+Return ONLY valid JSON, no markdown:
+{"time":"e.g. 30 min","steps":["casual plain-English step, max 20 words"]}
+3-5 steps. Conversational. Mention quantities only where truly needed.`;
+
+  try {
+    const res  = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:getHeaders(),
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:500,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await res.json();
+    const raw  = (data.content||[]).map(b=>b.text||'').join('');
+    const m    = raw.match(/\{[\s\S]*\}/);
+    const recipe = m ? JSON.parse(m[0]) : null;
+    if (!recipe) throw new Error();
+    const html = `<div class="recipe-time">~${recipe.time}</div>`
+      + recipe.steps.map((s,i)=>`<div class="recipe-step"><span class="step-num">${i+1}.</span><span class="step-text">${s}</span></div>`).join('');
+    recipeCache[idx] = html;
+    panel.innerHTML  = html;
+  } catch(e) { panel.innerHTML='<div class="recipe-time">Couldn\'t load — try again.</div>'; }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SWAP MEAL
+═══════════════════════════════════════════════════════════════════════ */
+async function swapMealUI(idx) {
+  if (swappingIdx!==null) return;
+  swappingIdx=idx;
+  const btn=document.getElementById(`swap-btn-${idx}`);
+  btn.textContent='…'; btn.disabled=true;
+
+  const cuisines=[...document.querySelectorAll('.cuisine-tog')].filter(b=>b.dataset.state!=='off')
+    .map(b=>`${b.dataset.cuisine} (${b.dataset.state==='yes'?'regular':'occasional, max once'})`).join(', ')||'any';
+  const sides=[...document.querySelectorAll('#sides-chips .chip.active')].map(b=>b.textContent.trim()).join(', ')||'any';
+  const health=document.querySelector('#health-chips .chip.active')?.textContent.trim()||'Balanced';
+  const meal=currentPlan.meals[idx];
+  const others=currentPlan.meals.filter((_,i)=>i!==idx).map(m=>m.main).join(', ');
+  const prev=idx>0?currentPlan.meals[idx-1]:null;
+  const next=idx<currentPlan.meals.length-1?currentPlan.meals[idx+1]:null;
+  const servings=household.adults+Math.ceil(household.children*0.6);
+
+  const prompt=`Suggest ONE replacement meal for ${DAYS[idx]||'day '+(idx+1)} of a family plan.
+Current: "${meal.main}". Others this week: ${others}.
+${prev?`Previous day: ${prev.main}, key ingredients: ${prev.key_ingredients?.join(', ')||'unknown'}.`:''}
+${next?`Next day: ${next.main}, key ingredients: ${next.key_ingredients?.join(', ')||'unknown'}.`:''}
+Cuisines: ${cuisines}. Sides: ${sides}. Health: ${health}. Servings: ~${servings}.
+Tags on original: ${meal.tags?.join(', ')||'none'}.
+Try to share at least one fresh ingredient with an adjacent day.
+Return ONLY valid JSON:
+{"main":"dish","side":"side or empty","tags":[],"key_ingredients":["ingredient"],"crossover":["shared if any"]}`;
+
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:getHeaders(),
+      body:JSON.stringify({model:'claude-sonnet-4-5',max_tokens:300,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const raw=(data.content||[]).map(b=>b.text||'').join('');
+    const m=raw.match(/\{[\s\S]*\}/);
+    if(m){
+      const nm=JSON.parse(m[0]);
+      currentPlan.meals[idx]={...meal,...nm,num:meal.num,tags:nm.tags||[],crossover:nm.crossover||[],key_ingredients:nm.key_ingredients||[]};
+      delete recipeCache[idx];
+      renderMeals(currentPlan.meals,currentPlan.prep_tasks||[]);
+      renderWasteScore(currentPlan.meals);
+    }
+  } catch{}
+  swappingIdx=null;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   GROCERY TOGGLES
+═══════════════════════════════════════════════════════════════════════ */
+function toggleItem(row, item) {
+  checkedItems.has(item)?checkedItems.delete(item):checkedItems.add(item);
+  row.querySelector('.g-check').classList.toggle('checked',checkedItems.has(item));
+  row.querySelector('.g-label').classList.toggle('checked',checkedItems.has(item));
+  updateStockedBadge(); updateExportCount();
+}
+function updateStockedBadge() {
+  const n=checkedItems.size, el=document.getElementById('stocked-badge');
+  el.style.display=n>0?'inline':'none';
+  el.textContent=`${n} already stocked`;
+}
+function updateExportCount() {
+  if(!currentPlan)return;
+  const needed=Object.values(currentPlan.grocery).flat().length-checkedItems.size;
+  document.getElementById('export-count').textContent=`${needed} item${needed!==1?'s':''} to buy`;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   XOVER TOOLTIP
+═══════════════════════════════════════════════════════════════════════ */
+function toggleXover(e,badge) {
+  e.stopPropagation();
+  const tip=badge.nextElementSibling;
+  tip.classList.toggle('show');
+  document.addEventListener('click',()=>tip.classList.remove('show'),{once:true});
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   EXPORT
+═══════════════════════════════════════════════════════════════════════ */
+function buildExportText() {
+  const plan=currentPlan;
+  const mealLines=plan.meals.map((m,i)=>{
+    if(m.main==='Meal prep day') return `${DAYS[i]||'Day '+(i+1)}  [Meal prep day]`;
+    return `${DAYS[i]||'Day '+(i+1)}  ${m.main}${m.side?'  |  Side: '+m.side:''}`;
+  });
+  const grocLines=Object.entries(plan.grocery).flatMap(([cat,items])=>{
+    const rem=items.filter(i=>!checkedItems.has(i));
+    return rem.length?[cat+':',...rem.map(i=>'  '+i),'']:[];
+  });
+  const serving=household.adults+Math.ceil(household.children*0.6);
+  return [
+    'WEEKLY MEAL PLAN',
+    `Household: ${household.adults} adult${household.adults!==1?'s':''}${household.children?` + ${household.children} child${household.children!==1?'ren':''}`:''} (~${serving} servings)`,
+    '─'.repeat(34),
+    ...mealLines,'',
+    'SHOPPING LIST',
+    '─'.repeat(34),
+    ...grocLines,
+    'Pantry staples not listed (oil, soy sauce, vinegar, sugar, salt, garlic, ginger).',
+  ].join('\n');
+}
+
+function showExport() {
+  document.getElementById('export-preview').textContent=buildExportText();
+  const needed=Object.values(currentPlan.grocery).flat().filter(i=>!checkedItems.has(i)).length;
+  document.getElementById('export-title').textContent=`Export — ${needed} item${needed!==1?'s':''} to buy`;
+  document.getElementById('export-panel').style.display='block';
+  document.getElementById('copy-btn').textContent='Copy to clipboard';
+  document.getElementById('copy-btn').className='btn-action copy-a';
+  document.getElementById('email-note').textContent='Opens your mail app with the list pre-filled — nothing is sent to any server.';
+  document.getElementById('email-note').className='email-note';
+  document.getElementById('send-btn').textContent='Send';
+  document.getElementById('send-btn').className='btn-send';
+}
+
+function hideExport(){document.getElementById('export-panel').style.display='none';}
+
+function doCopy(){
+  const txt=buildExportText();
+  const ok=()=>{
+    document.getElementById('copy-btn').textContent='✓ Copied!';
+    document.getElementById('copy-btn').className='btn-action success';
+    setTimeout(()=>{document.getElementById('copy-btn').textContent='Copy to clipboard';document.getElementById('copy-btn').className='btn-action copy-a';},2500);
+  };
+  if(navigator.clipboard?.writeText){navigator.clipboard.writeText(txt).then(ok).catch(()=>copyFallback(txt,ok));}
+  else copyFallback(txt,ok);
+}
+function copyFallback(txt,cb){
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.cssText='position:fixed;left:-9999px;top:-9999px;opacity:0;';
+  document.body.appendChild(ta);ta.focus();ta.select();
+  try{document.execCommand('copy');cb();}catch{}
+  document.body.removeChild(ta);
+}
+
+async function doPrint() {
+  const btn = document.getElementById('print-btn');
+  if (btn) { btn.textContent = 'Preparing…'; btn.disabled = true; }
+
+  /* ── Load jsPDF if not already loaded ── */
+  if (!window.jspdf) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+  const { jsPDF } = window.jspdf;
+
+  const plan    = currentPlan;
+  const serving = household.adults + Math.ceil(household.children * 0.6);
+  const hhLine  = household.adults + ' adult' + (household.adults!==1?'s':'')
+    + (household.children ? ' + ' + household.children + ' child' + (household.children!==1?'ren':'') : '')
+    + '  \u00b7  ~' + serving + ' servings per meal';
+
+  /* ── Fetch all recipes in parallel ── */
+  if (btn) btn.textContent = 'Fetching recipes\u2026';
+  const allMeals = plan.meals.filter(m => m.main && m.main !== 'Meal prep day');
+  const recipeResults = await Promise.all(allMeals.map(async (meal) => {
+    const cacheKey = Object.keys(recipeCache).find(k =>
+      currentPlan.meals[k] && normaliseName(currentPlan.meals[k].main) === normaliseName(meal.main)
+    );
+    if (cacheKey !== undefined && recipeCache[cacheKey]) {
+      return { meal, recipe: null, cached: true };
+    }
+    try {
+      const prompt = 'Simple home-cook recipe for "' + meal.main + '"'
+        + (meal.side ? ', served with: ' + meal.side : '') + '.\n'
+        + 'Scale for ' + serving + ' servings.\n'
+        + 'Return ONLY valid JSON, no markdown:\n'
+        + '{"time":"e.g. 30 min","ingredients":["amount + item"],"steps":["plain-English step, max 20 words"]}\n'
+        + '3-5 steps. 4-8 ingredients. Practical quantities. No pantry staples (oil, salt, garlic assumed stocked).';
+      const res  = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST', headers: getHeaders(),
+        body: JSON.stringify({ model: 'claude-sonnet-4-5', max_tokens: 600,
+          messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const raw  = (data.content || []).map(b => b.text || '').join('');
+      const m2   = raw.match(/\{[\s\S]*\}/);
+      return { meal, recipe: m2 ? JSON.parse(m2[0]) : null };
+    } catch(e) { return { meal, recipe: null }; }
+  }));
+
+  if (btn) btn.textContent = 'Building PDF\u2026';
+
+  /* ════════════════════════════════════════════════════════════
+     PDF LAYOUT — mirrors the Python/ReportLab format exactly
+  ═══════════════════════════════════════════════════════════════ */
+  const doc  = new jsPDF({ unit: 'pt', format: 'letter' });
+  const PW   = doc.internal.pageSize.getWidth();   // 612
+  const PH   = doc.internal.pageSize.getHeight();  // 792
+  const M    = 46.8;   // margin ~0.65 inch
+  const GAP  = 21.6;   // col gap ~0.3 inch
+  const CW   = (PW - 2*M - GAP) / 2; // half-page column width
+
+  /* Colour helpers */
+  const C = {
+    black:  [28, 27, 24],
+    grey:   [107,104, 96],
+    lgrey:  [160,157,150],
+    border: [232,230,222],
+    green:  [45, 106, 79],
+    purple: [91,  33,182],
+    bg:     [245,244,239],
+  };
+  function setFill(rgb)   { doc.setFillColor(...rgb); }
+  function setDraw(rgb)   { doc.setDrawColor(...rgb); }
+  function setTxt(rgb)    { doc.setTextColor(...rgb); }
+
+  function hline(x, y, w, rgb=[232,230,222], lw=0.5) {
+    setDraw(rgb); doc.setLineWidth(lw);
+    doc.line(x, y, x+w, y);
+  }
+
+  function sectionHead(x, y, text, spanW) {
+    const w = spanW || PW - 2*M;
+    doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    setTxt(C.lgrey);
+    doc.text(text.toUpperCase(), x, y);
+    hline(x, y+3, w);
+    return y + 14;
+  }
+
+  /* Word-wrap a string into lines that fit maxW at given fontSize */
+  function wrapText(text, font, style, size, maxW) {
+    doc.setFont(font, style); doc.setFontSize(size);
+    const words = text.split(' ');
+    const lines = [];
+    let line = '';
+    for (const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if (doc.getTextWidth(test) <= maxW) { line = test; }
+      else { if (line) lines.push(line); line = w; }
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  /* Draw word-wrapped text; returns y after last line */
+  function drawWrapped(text, font, style, size, color, x, y, maxW, lineH) {
+    const lines = wrapText(text, font, style, size, maxW);
+    doc.setFont(font, style); doc.setFontSize(size); setTxt(color);
+    for (const ln of lines) { doc.text(ln, x, y); y += lineH; }
+    return y;
+  }
+
+  /* ── PAGE 1 ─────────────────────────────────────────────────── */
+  let y = M + 16;
+
+  /* Title */
+  doc.setFont('helvetica','bold'); doc.setFontSize(22); setTxt(C.black);
+  doc.text('Family Meal Plan', M, y); y += 16;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); setTxt(C.grey);
+  doc.text(hhLine, M, y); y += 14;
+  hline(M, y, PW-2*M, C.black, 0.7); y += 14;
+
+  /* This Week */
+  y = sectionHead(M, y, 'This Week'); y += 2;
+  const DAY_X  = M;
+  const MAIN_X = M + 36;
+  const LH17   = 17;
+
+  plan.meals.forEach((m, i) => {
+    const day  = DAYS[i] || ('Day '+(i+1));
+    const prep = (i === prepDayIdx && m.prep_tasks && m.prep_tasks.length > 0);
+    doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    setTxt(prep ? C.purple : C.black);
+    doc.text(day, DAY_X, y);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); setTxt(C.black);
+    doc.text(m.main, MAIN_X, y);
+    const tailX = MAIN_X + doc.getTextWidth(m.main) + 4;
+    doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    if (prep) {
+      setTxt(C.purple); doc.text('(prep day)', tailX, y);
+    } else if (m.side) {
+      setTxt(C.grey); doc.text('+ ' + m.side, tailX, y);
+    }
+    hline(M, y+5, PW-2*M);
+    y += LH17;
+  });
+  y += 8;
+
+  /* Shopping List — two columns, whole categories kept together */
+  const ITEM_H = 13;
+  const CAT_H  = 20;
+  const grocEntries = Object.entries(plan.grocery); // [[cat,[items]],...]
+
+  function blockH(items) { return CAT_H + items.length * ITEM_H + 6; }
+
+  const totalGrocH = grocEntries.reduce((s,[,items]) => s + blockH(items), 0);
+  const halfH = totalGrocH / 2;
+
+  let col1Blocks = [], col2Blocks = [], running = 0;
+  for (const [cat, items] of grocEntries) {
+    if (running < halfH) { col1Blocks.push([cat,items]); running += blockH(items); }
+    else                 { col2Blocks.push([cat,items]); }
+  }
+
+  y = sectionHead(M, y, 'Shopping List'); y += 2;
+  const startY = y;
+
+  function drawGrocCol(blocks, cx, startCy) {
+    let cy = startCy;
+    for (const [cat, items] of blocks) {
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); setTxt(C.lgrey);
+      doc.text(cat, cx, cy);
+      cy += CAT_H - ITEM_H;
+      for (const item of items) {
+        const have = checkedItems.has(item);
+        if (have) {
+          doc.setFont('helvetica','bold'); doc.setFontSize(9); setTxt(C.lgrey);
+          doc.text('v', cx+1, cy);
+        } else {
+          setDraw(C.border); doc.setLineWidth(0.8);
+          doc.rect(cx, cy-7, 8, 8);
+        }
+        doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        setTxt(have ? C.lgrey : C.black);
+        doc.text(item, cx+13, cy);
+        if (have) {
+          const tw = doc.getTextWidth(item);
+          doc.setFont('helvetica','italic'); doc.setFontSize(7.5); setTxt(C.lgrey);
+          doc.text('have', cx+13+tw+4, cy);
+        }
+        cy += ITEM_H;
+      }
+      cy += 6;
+    }
+    return cy;
+  }
+
+  const end1 = drawGrocCol(col1Blocks, M,       startY);
+  const end2 = drawGrocCol(col2Blocks, M+CW+GAP, startY);
+
+  const footerY = Math.max(end1, end2) + 10;
+  doc.setFont('helvetica','italic'); doc.setFontSize(7.5); setTxt(C.lgrey);
+  doc.text('Checked items are already stocked.  Pantry staples (oil, soy sauce, vinegar, sugar, salt, garlic, ginger) not listed.', M, footerY);
+
+  /* ── PAGE 2+ — RECIPES ─────────────────────────────────────── */
+  doc.addPage();
+  let ry = M + 14;
+  let firstRecipePage = true;
+
+  function recipePageHeader(cont) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); setTxt(C.black);
+    doc.text('Family Meal Plan \u2013 Recipes' + (cont ? ' (continued)' : ''), M, ry);
+    ry += 14;
+    hline(M, ry, PW-2*M, C.black, 0.7);
+    ry += 14;
+  }
+  recipePageHeader(false);
+
+  const ING_W  = (PW - 2*M) * 0.38;
+  const DIR_W  = (PW - 2*M) * 0.58;
+  const ING_X  = M;
+  const DIR_X  = M + ING_W + GAP;
+  const RLH    = 11.5;
+  const RGAP   = 12;
+
+  /* Build recipe data list from fetched results */
+  const recipeData = recipeResults.map(({meal, recipe}) => ({ meal, recipe }));
+
+  for (let ri = 0; ri < recipeData.length; ri++) {
+    const { meal, recipe: r } = recipeData[ri];
+    const mealIdx = plan.meals.findIndex(m => normaliseName(m.main) === normaliseName(meal.main));
+    const isPrepDay = (mealIdx === prepDayIdx);
+    const prepTasks = isPrepDay ? (meal.prep_tasks || plan.prep_tasks || []) : [];
+    const hasTasks  = prepTasks.length > 0;
+
+    /* Estimate block height */
+    const ingLines  = r ? (r.ingredients||[]).length : 1;
+    const stepLines = r ? (r.steps||[]).reduce((s,st) => {
+      const lns = wrapText(st,'helvetica','normal',8.5,DIR_W-16);
+      return s + lns.length;
+    }, 0) : 1;
+    const bodyH = Math.max(ingLines, stepLines) * RLH;
+    const taskH = hasTasks ? prepTasks.reduce((s,t) => {
+      return s + wrapText(t,'helvetica','normal',8.5,PW-2*M-12).length * 11;
+    }, 0) + 18 : 0;
+    const estH = 38 + bodyH + taskH + RGAP + RLH;
+
+    if (!firstRecipePage && ry + estH > PH - M - 10) {
+      doc.addPage(); ry = M + 14; recipePageHeader(true);
+    }
+    firstRecipePage = false;
+
+    /* Title bar */
+    setFill(C.bg); doc.setDrawColor(255,255,255);
+    doc.rect(M, ry-12, PW-2*M, 16, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(9.5);
+    setTxt(isPrepDay ? C.purple : C.green);
+    const dayLabel = DAYS[mealIdx] || ('Day '+(mealIdx+1));
+    doc.text(dayLabel + '  ' + meal.main, M+4, ry);
+    if (r && r.time) {
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); setTxt(C.lgrey);
+      doc.text(r.time, PW-M-4, ry, {align:'right'});
+    }
+    ry += 10;
+
+    /* Column sub-headers */
+    doc.setFont('helvetica','bold'); doc.setFontSize(7); setTxt(C.lgrey);
+    doc.text('INGREDIENTS', ING_X, ry);
+    doc.text('DIRECTIONS',  DIR_X, ry);
+    ry += 9;
+    hline(M, ry, PW-2*M); ry += 3;
+
+    const rowTop = ry;
+
+    /* Ingredients */
+    let ingY = rowTop;
+    if (r && r.ingredients) {
+      for (const ing of r.ingredients) {
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); setTxt(C.black);
+        doc.text('\u00b7', ING_X, ingY);
+        doc.text(ing, ING_X+8, ingY);
+        ingY += RLH;
+      }
+    } else {
+      doc.setFont('helvetica','italic'); doc.setFontSize(8); setTxt(C.lgrey);
+      doc.text('Recipe unavailable', ING_X, ingY); ingY += RLH;
+    }
+
+    /* Steps */
+    let stepY = rowTop;
+    if (r && r.steps) {
+      for (let si = 0; si < r.steps.length; si++) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(8.5); setTxt(C.green);
+        doc.text((si+1) + '.', DIR_X, stepY);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); setTxt(C.black);
+        const lines = wrapText(r.steps[si],'helvetica','normal',8.5, DIR_W-16);
+        for (let li = 0; li < lines.length; li++) {
+          doc.text(lines[li], DIR_X+13, stepY);
+          stepY += RLH;
+        }
+        stepY -= RLH * 0.3;
+      }
+    }
+
+    ry = Math.max(ingY, stepY);
+
+    /* Side note */
+    if (meal.side) {
+      doc.setFont('helvetica','italic'); doc.setFontSize(7.5); setTxt(C.grey);
+      doc.text('Side: ' + meal.side, ING_X, ry);
+      ry += RLH;
+    }
+
+    /* Prep tasks */
+    if (hasTasks) {
+      ry += 5;
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); setTxt(C.purple);
+      doc.text('PREP DAY BATCH TASKS', M, ry);
+      hline(M, ry+3, PW-2*M, C.purple, 0.4);
+      ry += 13;
+      for (const task of prepTasks) {
+        doc.setFont('helvetica','bold'); doc.setFontSize(9); setTxt(C.purple);
+        doc.text('\u00b7', M, ry);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8.5); setTxt(C.black);
+        const lines = wrapText(task,'helvetica','normal',8.5, PW-2*M-12);
+        for (const ln of lines) {
+          doc.text(ln, M+10, ry);
+          ry += 11;
+        }
+        ry -= 11 * 0.3;
+      }
+    }
+
+    ry += RGAP;
+    hline(M, ry-5, PW-2*M, C.border, 0.4);
+  }
+
+  /* ── Save ── */
+  doc.save('family_meal_plan.pdf');
+  if (btn) { btn.textContent = 'Print / save PDF'; btn.disabled = false; }
+}
+
+
+function doEmail(){
+  const emailEl=document.getElementById('email-input');
+  const noteEl=document.getElementById('email-note');
+  const sendBtn=document.getElementById('send-btn');
+  const addr=emailEl.value.trim();
+  if(!addr.includes('@')){noteEl.textContent='Please enter a valid email address.';noteEl.className='email-note error';return;}
+  const subject=encodeURIComponent('This week\'s meal plan + shopping list');
+  const body=encodeURIComponent(buildExportText());
+  window.location.href=`mailto:${addr}?subject=${subject}&body=${body}`;
+  sendBtn.textContent='Opened ✓';sendBtn.className='btn-send sent';
+  noteEl.textContent='Your mail app should open with the list ready to send. If it didn\'t, use "Copy to clipboard" and paste.';
+  noteEl.className='email-note success';
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   WEEK HISTORY  ·  FAVOURITES  ·  REPEAT LOGIC
+   All persisted in localStorage under 'mealplanner_history' and
+   'mealplanner_favourites'. Max 4 weeks kept.
+═══════════════════════════════════════════════════════════════════════ */
+
+const HISTORY_KEY    = 'mealplanner_history';
+const FAVS_KEY       = 'mealplanner_favourites';
+const MAX_WEEKS      = 4;
+const MAX_REPEATS    = 2;   // allow at most this many meals to repeat from last week
+
+/* ── storage helpers ─────────────────────────────────────────────── */
+function historyLoad() {
+  try { return JSON.parse(lsGet(HISTORY_KEY) || '[]'); } catch(e) { return []; }
+}
+function historySave(weeks) {
+  lsSet(HISTORY_KEY, JSON.stringify(weeks.slice(-MAX_WEEKS)));
+}
+function favsLoad() {
+  try { return JSON.parse(lsGet(FAVS_KEY) || '[]'); } catch(e) { return []; }
+}
+function favsSave(favs) {
+  lsSet(FAVS_KEY, JSON.stringify(favs));
+}
+
+/* ── save current week when plan is accepted ─────────────────────── */
+function saveWeekToHistory(plan, weekLabel) {
+  const weeks = historyLoad();
+  const entry = {
+    week: weekLabel || new Date().toLocaleDateString('en-CA'), // YYYY-MM-DD
+    meals: (plan.meals || []).map(m => ({
+      main: m.main,
+      side: m.side || '',
+      tags: m.tags || [],
+    }))
+  };
+  // Avoid duplicate saves for the same week
+  const filtered = weeks.filter(w => w.week !== entry.week);
+  filtered.push(entry);
+  historySave(filtered);
+}
+
+/* ── get all meal names from recent history (flattened) ─────────── */
+function recentMealNames(excludeCurrentWeek) {
+  const weeks = historyLoad();
+  const use   = excludeCurrentWeek ? weeks.slice(0, -1) : weeks;
+  return use.flatMap(w => (w.meals||[]).map(m => normaliseName(m.main)));
+}
+
+/* ── last week's meal names for repeat-limiting ─────────────────── */
+function lastWeekMealNames() {
+  const weeks = historyLoad();
+  if (!weeks.length) return [];
+  const last = weeks[weeks.length - 1];
+  return (last.meals || []).map(m => normaliseName(m.main));
+}
+
+function normaliseName(name) {
+  return (name || '').toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+/* ── favourites API ─────────────────────────────────────────────── */
+function isFavourite(mealName) {
+  return favsLoad().some(f => normaliseName(f.main) === normaliseName(mealName));
+}
+
+function toggleFavourite(mealName, mealSide) {
+  const favs = favsLoad();
+  const norm = normaliseName(mealName);
+  const idx  = favs.findIndex(f => normaliseName(f.main) === norm);
+  if (idx >= 0) {
+    favs.splice(idx, 1);
+  } else {
+    favs.push({ main: mealName, side: mealSide || '', addedAt: new Date().toISOString() });
+  }
+  favsSave(favs);
+  return idx < 0; // true = now a favourite
+}
+
+function getFavourites() {
+  return favsLoad();
+}
+
+/* ── build history context for the prompt ───────────────────────── */
+function buildHistoryContext() {
+  const weeks  = historyLoad();
+  const favs   = favsLoad();
+  const lines  = [];
+
+  if (weeks.length) {
+    lines.push('RECENT MEAL HISTORY (last ' + weeks.length + ' week' + (weeks.length>1?'s':'') + '):');
+    weeks.forEach((w, wi) => {
+      const label = wi === weeks.length - 1 ? 'Last week' : `${weeks.length - wi} weeks ago`;
+      const names = (w.meals||[]).filter(m => m.main && m.main !== 'Meal prep day').map(m => m.main).join(', ');
+      if (names) lines.push(`  ${label} (${w.week}): ${names}`);
+    });
+    lines.push('');
+    lines.push(`REPEAT RULE: Do NOT repeat more than ${MAX_REPEATS} meals from last week's list. Fried rice is exempt from this rule. Repeating a meal that appeared 2+ weeks ago is fine.`);
+    lines.push('');
+  }
+
+  if (favs.length) {
+    lines.push('HOUSEHOLD FAVOURITES (starred meals — use these or similar dishes more often):');
+    favs.forEach(f => lines.push(`  ★ ${f.main}${f.side ? ' + ' + f.side : ''}`));
+    lines.push('When planning, bias toward favourites or their close variations. If a favourite fits the cuisine and health settings, strongly prefer including it.');
+    lines.push('');
+  }
+
+  return lines.join('\n');
+}
+
+/* ── render history panel ───────────────────────────────────────── */
+function renderHistoryPanel() {
+  const weeks = historyLoad();
+  const favs  = favsLoad();
+  const el    = document.getElementById('history-panel-body');
+  if (!el) return;
+
+  if (!weeks.length && !favs.length) {
+    el.innerHTML = '<p class="hist-empty">No history yet \u2014 generate your first plan to start tracking!</p>';
+    return;
+  }
+
+  let html = '';
+
+  if (favs.length) {
+    html += '<div class="hist-section-title">\u2605 Favourites</div><div class="fav-list">';
+    favs.forEach((f,fi) => {
+      html += '<div class="fav-item">'
+        + '<div class="fav-name">' + safeAttr(f.main)
+        + (f.side ? '<span class="fav-side"> + ' + safeAttr(f.side) + '</span>' : '')
+        + '</div>'
+        + '<button class="btn-unfav" data-fi="' + fi + '">\u2715</button>'
+        + '</div>';
+    });
+    html += '</div>';
+  }
+
+  if (weeks.length) {
+    html += '<div class="hist-section-title" style="margin-top:1rem">Recent weeks</div>';
+    const sorted = [...weeks].reverse();
+    sorted.forEach((w, wi) => {
+      const label = wi===0?'Last week':wi===1?'2 weeks ago':wi===2?'3 weeks ago':'4 weeks ago';
+      html += '<div class="hist-week">'
+        + '<div class="hist-week-label">' + label
+        + ' <span class="hist-week-date">' + safeAttr(w.week) + '</span></div>'
+        + '<div class="hist-meals">';
+      (w.meals||[]).filter(m=>m.main&&m.main!=='Meal prep day').forEach((m,mi) => {
+        const fav = isFavourite(m.main);
+        html += '<div class="hist-meal-row">'
+          + '<span class="hist-meal-name">' + safeAttr(m.main)
+          + (m.side ? '<span class="hist-side"> + ' + safeAttr(m.side) + '</span>' : '')
+          + '</span>'
+          + '<button class="btn-star ' + (fav?'starred':'') + '" data-wi="' + wi + '" data-mi="' + mi + '" title="' + (fav?'Remove from favourites':'Add to favourites') + '">'
+          + (fav?'\u2605':'\u2606') + '</button>'
+          + '</div>';
+      });
+      html += '</div></div>';
+    });
+  }
+
+  el.innerHTML = html;
+}
+function toggleFavUI(name, side, btn) {
+  const nowFav = toggleFavourite(name, side);
+  btn.textContent = nowFav ? '\u2605' : '\u2606';
+  btn.classList.toggle('starred', nowFav);
+  btn.title = nowFav ? 'Remove from favourites' : 'Add to favourites';
+  if (currentPlan) renderMeals(currentPlan.meals, currentPlan.prep_tasks||[]);
+  renderHistoryPanel();
+}
+
+function histStarClick(btn) {
+  const wi    = parseInt(btn.dataset.wi);
+  const mi    = parseInt(btn.dataset.mi);
+  const weeks = historyLoad();
+  const sorted = [...weeks].reverse();
+  const week   = sorted[wi];
+  if (!week) return;
+  const realMeals = (week.meals||[]).filter(m=>m.main&&m.main!=='Meal prep day');
+  const meal = realMeals[mi];
+  if (!meal) return;
+  toggleFavUI(meal.main, meal.side||'', btn);
+}
+
+function unfavByIdx(btn) {
+  const fi   = parseInt(btn.dataset.fi);
+  const favs = favsLoad();
+  if (fi >= 0 && fi < favs.length) {
+    const name = favs[fi].main;
+    toggleFavourite(name, '');
+    renderHistoryPanel();
+    if (currentPlan) renderMeals(currentPlan.meals, currentPlan.prep_tasks||[]);
+  }
+}
+
+function unfavFromPanel(name) {
+  toggleFavourite(name, '');
+  renderHistoryPanel();
+  if (currentPlan) renderMeals(currentPlan.meals, currentPlan.prep_tasks||[]);
+}
+
+function toggleHistoryPanel() {
+  const panel = document.getElementById('history-panel');
+  const btn   = document.getElementById('history-btn');
+  const open  = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '★ History & favourites' : '★ Hide';
+  if (!open) renderHistoryPanel();
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', function() {
+
+  /* --- API key input --- */
+  var apiInp = document.getElementById('api-key-input');
+  if (apiInp) {
+    var savedKey = lsGet('mealplanner_apikey') || '';
+    if (savedKey) { apiInp.value = savedKey; saveApiKey(savedKey); }
+    ['input','change','keyup','blur','paste'].forEach(function(evt) {
+      apiInp.addEventListener(evt, function() { saveApiKey(apiInp.value); });
+    });
+  }
+
+  /* --- static button wiring --- */
+  function on(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener('click', fn); }
+  function onAll(sel, fn) { document.querySelectorAll(sel).forEach(function(el){ el.addEventListener('click', function(e){ fn(el, e); }); }); }
+
+  on('edit-settings-btn', toggleSettings);
+  on('gen-btn', generatePlan);
+  on('history-btn', toggleHistoryPanel);
+  on('save-week-btn', doSaveWeek);
+  on('copy-btn', doCopy);
+  on('print-btn', doPrint);
+  on('send-btn', doEmail);
+  on('sug-btn', getSuggestions);
+  onAll('.btn-clear-defaults', clearDefaults);
+  onAll('.btn-save-defaults', saveDefaults);
+  onAll('.btn-export', showExport);
+  onAll('.btn-close', function(el) {
+    if (el.closest('#export-panel')) hideExport();
+    else if (el.closest('#history-panel')) toggleHistoryPanel();
+  });
+
+  /* --- household steppers --- */
+  onAll('.hh-btn', function(btn) {
+    btn.addEventListener = btn.addEventListener; // no-op, already registered via onAll
+  });
+  document.querySelectorAll('.hh-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      adjustHH(btn.dataset.field, parseInt(btn.dataset.delta));
+    });
+  });
+
+  /* --- settings chips --- */
+  onAll('.cuisine-tog', function(btn) { cycleCuisine(btn); });
+  onAll('#sides-chips .chip', function(btn) { toggleChip(btn); });
+  onAll('#health-chips .chip', function(btn) { selectHealth(btn); });
+  onAll('.chip.prep-day', function(btn) { selectPrepDay(btn); });
+
+  /* --- event delegation: meals card (swap/recipe/prep/reorder/star/xover) --- */
+  var mealsCard = document.getElementById('meals-card');
+  if (mealsCard) {
+    mealsCard.addEventListener('click', function(e) {
+      var btn = e.target.closest('button, .badge-xover');
+      if (!btn) return;
+      if (btn.classList.contains('btn-reorder')) { reorderMeal(btn); return; }
+      if (btn.classList.contains('btn-star'))    { starClick(btn); return; }
+      if (btn.classList.contains('badge-xover')) { toggleXover(e, btn); return; }
+      var id = btn.id || '';
+      if (id.startsWith('swap-btn-'))   { swapMealUI(parseInt(id.replace('swap-btn-',''))); return; }
+      if (id.startsWith('recipe-btn-')) { toggleRecipe(parseInt(id.replace('recipe-btn-',''))); return; }
+      if (id.startsWith('prep-btn-'))   { togglePrepPanel(parseInt(id.replace('prep-btn-',''))); return; }
+    });
+  }
+
+  /* --- event delegation: grocery grid --- */
+  var grocGrid = document.getElementById('grocery-grid');
+  if (grocGrid) {
+    grocGrid.addEventListener('click', function(e) {
+      var item = e.target.closest('.grocery-item');
+      if (!item) return;
+      var itemName = item.dataset.item || (item.querySelector('.g-label') || {}).textContent || '';
+      if (itemName) toggleItem(item, itemName.trim());
+    });
+  }
+
+  /* --- event delegation: history panel --- */
+  var histBody = document.getElementById('history-panel-body');
+  if (histBody) {
+    histBody.addEventListener('click', function(e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      if (btn.classList.contains('btn-star'))   { histStarClick(btn); return; }
+      if (btn.classList.contains('btn-unfav'))  { unfavByIdx(btn); return; }
+    });
+  }
+
+  /* --- event delegation: comfort suggestions --- */
+  var comfortBox = document.getElementById('comfort-suggestions');
+  if (comfortBox) {
+    comfortBox.addEventListener('click', function(e) {
+      var btn = e.target.closest('.comfort-sug');
+      if (btn) toggleComfort(btn.dataset.val);
+    });
+  }
+
+  loadDefaults();
+  updateHHDisplay();
+});
+</script>
+</body>
+</html>
