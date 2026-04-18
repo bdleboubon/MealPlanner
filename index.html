@@ -43,13 +43,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
 
 /* ── toggles / chips ── */
-.toggle-group,.chip-group{display:flex;flex-wrap:wrap;gap:7px}
-.cuisine-tog{display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:20px;font-size:12.5px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-.cuisine-tog .dot{width:7px;height:7px;border-radius:50%;background:transparent;transition:background .18s;flex-shrink:0}
-.cuisine-tog .st{font-size:10px;opacity:.65;margin-left:1px}
-.cuisine-tog[data-state="yes"]{background:var(--green-bg);border-color:var(--green-mid);color:var(--green)}
+.chip-group{display:flex;flex-wrap:wrap;gap:7px}
+/* cuisine: 4-per-row grid, equal-width, centered */
+.toggle-group{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.cuisine-tog{display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 4px;border-radius:20px;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text2);transition:all .18s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation;text-align:center;min-height:40px;width:100%}
+.cuisine-tog .dot{width:6px;height:6px;border-radius:50%;background:transparent;transition:background .18s;flex-shrink:0}
+.cuisine-tog .st{display:none}
+.cuisine-tog[data-state="yes"]{background:var(--green-bg);border-color:var(--green-mid);color:var(--green);border-width:1.5px}
 .cuisine-tog[data-state="yes"] .dot{background:var(--green-mid)}
-.cuisine-tog[data-state="occ"]{background:var(--amber-bg);border-color:var(--amber-mid);color:var(--amber)}
+.cuisine-tog[data-state="occ"]{background:var(--amber-bg);border-color:var(--amber-mid);color:var(--amber);border-width:1.5px}
 .cuisine-tog[data-state="occ"] .dot{background:var(--amber-mid)}
 .chip{padding:5px 13px;border-radius:20px;font-size:12px;font-family:'Inter',sans-serif;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all .15s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .chip.active{background:var(--blue-bg);border-color:var(--blue-mid);color:var(--blue)}
@@ -343,16 +345,16 @@ input[type="number"]{width:64px;text-align:center;font-size:16px}
 
     <!-- Cuisines -->
     <div class="settings-section">
-      <div class="sec-label">Cuisine types — once = always · twice = occasional · three times = off</div>
+      <div class="sec-label">Cuisine types — tap once = always &nbsp;·&nbsp; twice = occasional &nbsp;·&nbsp; three times = off</div>
       <div class="toggle-group" id="cuisine-toggles">
-        <button class="cuisine-tog" data-cuisine="Chinese home cooking"  data-state="off"><span class="dot"></span>Chinese home<span class="st"></span></button>
-        <button class="cuisine-tog" data-cuisine="Japanese home cooking" data-state="off"><span class="dot"></span>Japanese home<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Chinese home cooking"  data-state="off"><span class="dot"></span>Chinese<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Japanese home cooking" data-state="off"><span class="dot"></span>Japanese<span class="st"></span></button>
         <button class="cuisine-tog" data-cuisine="Thai"                  data-state="off"><span class="dot"></span>Thai<span class="st"></span></button>
-        <button class="cuisine-tog" data-cuisine="Western comfort food"  data-state="off"><span class="dot"></span>Western<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Indian"                data-state="off"><span class="dot"></span>Indian<span class="st"></span></button>
         <button class="cuisine-tog" data-cuisine="Italian"               data-state="off"><span class="dot"></span>Italian<span class="st"></span></button>
         <button class="cuisine-tog" data-cuisine="Mexican"               data-state="off"><span class="dot"></span>Mexican<span class="st"></span></button>
         <button class="cuisine-tog" data-cuisine="Mediterranean"         data-state="off"><span class="dot"></span>Mediterranean<span class="st"></span></button>
-        <button class="cuisine-tog" data-cuisine="Indian"                data-state="off"><span class="dot"></span>Indian<span class="st"></span></button>
+        <button class="cuisine-tog" data-cuisine="Western comfort food"  data-state="off"><span class="dot"></span>Western<span class="st"></span></button>
       </div>
     </div>
 
